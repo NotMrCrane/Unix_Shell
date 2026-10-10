@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/wait.h>
 
 #define MAX_LINE 80 /* The maximum length command */
 
@@ -31,6 +32,37 @@ int main(void)
             token = strtok(NULL, " \t\n");
         }
         args[i] = NULL;
+
+        if (args[0] == NULL)
+        {
+            continue;
+        }
+
+        if (strcmp(args[0], "exit") == 0)
+        {
+            should_run = 0;
+            break;
+        }
+
+        pid_t pid = fork();
+
+        if (pid < 0)
+        {
+            perror("fork failed");
+            return 1;
+        }
+
+        else if (pid == 0)
+        {
+            execvp(args[0], args);
+            perror("execvp failed");
+            _exit(1);
+        }
+
+        else
+        {
+            wait(NULL);
+        }
 
         /**
          * After reading user input, the steps are:
