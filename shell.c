@@ -11,6 +11,10 @@ int main(void)
     int should_run = 1;           /* flag to determine when to exit program */
 
     char input[MAX_LINE + 1];
+    char history[5][MAX_LINE + 1]; /*2 dimensional array for remembering previous commands*/
+
+    int history_count = 0;  /*Number of commands currently stored (max 5)*/
+    int command_number = 0; /*Total number of commands added to history since the shell started*/
 
     while (should_run)
     {
@@ -23,6 +27,10 @@ int main(void)
         {
             break;
         }
+
+        input[strcspn(input, "\n")] = '\0';
+        char original[MAX_LINE + 1]; /*contains a separate copy of the command*/
+        strcpy(original, input);
 
         int i = 0;
         char *token = strtok(input, " \t\n");
@@ -52,6 +60,13 @@ int main(void)
             args[i - 1] = NULL;
         }
 
+        if (history_count < 5)
+        {
+            strcpy(history[history_count], original);
+            history_count += 1;
+            command_number += 1;
+        }
+
         pid_t pid = fork();
 
         if (pid < 0)
@@ -68,10 +83,11 @@ int main(void)
         }
 
         else
-        {   
-            if (should_wait == 0){
+        {
+            if (should_wait == 0)
+            {
                 wait(NULL);
-            }   
+            }
         }
     }
 
