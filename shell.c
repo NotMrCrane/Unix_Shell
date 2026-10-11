@@ -121,7 +121,7 @@ int main(void)
         {
             if (should_wait == 0)
             {
-                wait(NULL);
+                waitpid(pid, NULL, 0); /*the parent waits specifically for the child created*/
             }
         }
     }
