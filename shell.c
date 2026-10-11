@@ -65,6 +65,15 @@ int main(void)
             continue;
         }
 
+        if (strcmp(args[0], "history") == 0)
+        {
+            for (int j = history_count - 1; j >= 0; j--)
+            {
+                printf("%d %s\n", command_number - (history_count - 1 - j), history[j]);
+            }
+            continue;
+        }
+
         if (history_count < 5)
         {
             strcpy(history[history_count], original);
@@ -79,13 +88,6 @@ int main(void)
             strcpy(history[4], original);
         }
         command_number += 1;
-
-        printf("Current history:\n");
-
-        for (int j = 0; j < history_count; j++)
-        {
-            printf("%s\n", history[j]);
-        }
 
         pid_t pid = fork();
 
