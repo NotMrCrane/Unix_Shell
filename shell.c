@@ -17,6 +17,8 @@ int main(void)
         printf("osh>");
         fflush(stdout);
 
+        int should_wait = 0; /* A variable to flag if our parent should wait for child or not*/
+
         if (fgets(input, sizeof(input), stdin) == NULL)
         {
             break;
@@ -44,6 +46,12 @@ int main(void)
             break;
         }
 
+        if (i > 0 && strcmp(args[i - 1], "&") == 0)
+        {
+            should_wait = 1;
+            args[i - 1] = NULL;
+        }
+
         pid_t pid = fork();
 
         if (pid < 0)
@@ -60,8 +68,10 @@ int main(void)
         }
 
         else
-        {
-            wait(NULL);
+        {   
+            if (should_wait == 0){
+                wait(NULL);
+            }   
         }
 
         /**
