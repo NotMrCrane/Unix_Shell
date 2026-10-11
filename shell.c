@@ -21,7 +21,7 @@ int main(void)
         printf("osh>");
         fflush(stdout);
 
-        int should_wait = 0; /* A variable to flag if our parent should wait for child or not*/
+        int should_wait = 0; /* A variable to flag if our parent should wait for child or not. 0: parent waits, 1: parent does not wait*/
 
         if (fgets(input, sizeof(input), stdin) == NULL)
         {
@@ -30,7 +30,7 @@ int main(void)
 
         input[strcspn(input, "\n")] = '\0';
 
-        if (strcmp(input, "!!") == 0)
+        if (strcmp(input, "!!") == 0) /* Retrieve and execute the most recent command if the user enters !! */
         {
             if (history_count == 0)
             {
@@ -42,9 +42,11 @@ int main(void)
             printf("%s\n", input);
         }
 
-        char original[MAX_LINE + 1]; /*contains a separate copy of the command*/
+        /* Save the original command before strtok() modifies the input */
+        char original[MAX_LINE + 1];
         strcpy(original, input);
 
+        /* Split the input into arguments to be passed to execvp() */
         int i = 0;
         char *token = strtok(input, " \t\n");
 
@@ -67,7 +69,7 @@ int main(void)
             break;
         }
 
-        if (i > 0 && strcmp(args[i - 1], "&") == 0)
+        if (i > 0 && strcmp(args[i - 1], "&") == 0) /* Check for & at the end of the command and enable background execution */
         {
             should_wait = 1;
             args[i - 1] = NULL;
@@ -78,6 +80,7 @@ int main(void)
             continue;
         }
 
+        /* Display the last 5 commands in reverse order without storing "history" itself */
         if (strcmp(args[0], "history") == 0)
         {
             for (int j = history_count - 1; j >= 0; j--)
@@ -87,6 +90,7 @@ int main(void)
             continue;
         }
 
+        /* Store the last 5 commands, removing the oldest when history is full */
         if (history_count < 5)
         {
             strcpy(history[history_count], original);
