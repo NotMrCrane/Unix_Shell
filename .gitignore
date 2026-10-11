@@ -1,0 +1,6 @@
+/shell
+# macOS debugging files
+*.dSYM/
+
+# macOS system files
+.DS_Store
