@@ -29,6 +29,19 @@ int main(void)
         }
 
         input[strcspn(input, "\n")] = '\0';
+
+        if (strcmp(input, "!!") == 0)
+        {
+            if (history_count == 0)
+            {
+                printf("No commands in history.\n");
+                continue;
+            }
+
+            strcpy(input, history[history_count - 1]);
+            printf("%s\n", input);
+        }
+
         char original[MAX_LINE + 1]; /*contains a separate copy of the command*/
         strcpy(original, input);
 
