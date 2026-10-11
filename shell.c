@@ -43,11 +43,6 @@ int main(void)
         }
         args[i] = NULL;
 
-        if (args[0] == NULL)
-        {
-            continue;
-        }
-
         if (strcmp(args[0], "exit") == 0)
         {
             should_run = 0;
@@ -60,11 +55,31 @@ int main(void)
             args[i - 1] = NULL;
         }
 
+        if (args[0] == NULL)
+        {
+            continue;
+        }
+
         if (history_count < 5)
         {
             strcpy(history[history_count], original);
             history_count += 1;
-            command_number += 1;
+        }
+        else
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                strcpy(history[j], history[j + 1]);
+            }
+            strcpy(history[4], original);
+        }
+        command_number += 1;
+
+        printf("Current history:\n");
+
+        for (int j = 0; j < history_count; j++)
+        {
+            printf("%s\n", history[j]);
         }
 
         pid_t pid = fork();
