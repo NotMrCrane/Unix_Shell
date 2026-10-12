@@ -28,6 +28,24 @@ int main(void)
             break;
         }
 
+        /* Checks if the command exceeds the maximum length of 80 characters */
+        if (strlen(input) == MAX_LINE && strchr(input, '\n') == NULL)
+        {
+            int ch = getchar();
+
+            if (ch != '\n' && ch != EOF)
+            {
+                /* Discards the remaining characters until newline or EOF */
+                while ((ch = getchar()) != '\n' && ch != EOF)
+                {
+                    // getchar() discards each character
+                }
+
+                printf("Error: command exceeds 80 characters.\n");
+                continue;
+            }
+        }
+
         input[strcspn(input, "\n")] = '\0';
 
         if (strcmp(input, "!!") == 0) /* Retrieve and execute the most recent command if the user enters !! */
@@ -80,7 +98,7 @@ int main(void)
             continue;
         }
 
-        /* Display the last 5 commands in reverse order without storing "history" itself */
+        /* Displays the last 5 commands in reverse order without storing "history" itself */
         if (strcmp(args[0], "history") == 0)
         {
             for (int j = history_count - 1; j >= 0; j--)
@@ -90,7 +108,7 @@ int main(void)
             continue;
         }
 
-        /* Store the last 5 commands, removing the oldest when history is full */
+        /* Stores the last 5 commands, removing the oldest when history is full */
         if (history_count < 5)
         {
             strcpy(history[history_count], original);
